@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Xasuus – Play Store Assets</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#0f172a;color:#e2e8f0;padding:2rem}
+h1{text-align:center;font-size:1.5rem;margin-bottom:.5rem}
+p.sub{text-align:center;color:#94a3b8;margin-bottom:2rem;font-size:.9rem}
+.section{margin-bottom:3rem}
+.section h2{font-size:1.1rem;color:#a78bfa;margin-bottom:1rem;border-bottom:1px solid #1e293b;padding-bottom:.5rem}
+.grid{display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center}
+.card{background:#1e293b;border-radius:16px;padding:1rem;display:flex;flex-direction:column;align-items:center;gap:.75rem}
+.card canvas{border-radius:12px;max-width:100%}
+.card .info{font-size:.75rem;color:#64748b;text-align:center}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.2rem;font-size:.85rem;font-weight:600;color:#a78bfa;background:rgba(167,139,250,.12);border:2px solid rgba(167,139,250,.3);border-radius:10px;cursor:pointer;transition:.2s}
+.btn:hover{background:rgba(167,139,250,.25);border-color:#a78bfa}
+.texts{background:#1e293b;border-radius:16px;padding:1.5rem;margin-top:1rem}
+.texts h3{color:#a78bfa;font-size:.95rem;margin-bottom:.5rem}
+.texts pre{white-space:pre-wrap;font-size:.85rem;color:#cbd5e1;line-height:1.6;margin-bottom:1rem}
+.copy-btn{font-size:.75rem;padding:.4rem .8rem;margin-bottom:1rem}
+</style>
+</head>
+<body>
+<h1>Xasuus – Google Play Store Assets</h1>
+<p class="sub">Click any "Download" button to save the image</p>
+
+<div class="section">
+<h2>App Icon (512 × 512)</h2>
+<div class="grid">
+<div class="card">
+<canvas id="icon" width="512" height="512"></canvas>
+<div class="info">512 × 512 PNG</div>
+<button class="btn" onclick="dl('icon','xasuus-icon-512.png')">Download Icon</button>
+</div>
+</div>
+</div>
+
+<div class="section">
+<h2>Feature Graphic (1024 × 500)</h2>
+<div class="grid">
+<div class="card">
+<canvas id="feature" width="1024" height="500" style="max-width:600px"></canvas>
+<div class="info">1024 × 500 PNG</div>
+<button class="btn" onclick="dl('feature','xasuus-feature-graphic.png')">Download Feature Graphic</button>
+</div>
+</div>
+</div>
+
+<div class="section">
+<h2>Phone Screenshots (1080 × 1920) – 4 screens</h2>
+<div class="grid">
+<div class="card">
+<canvas id="ss1" width="1080" height="1920" style="max-width:200px"></canvas>
+<div class="info">Welcome</div>
+<button class="btn" onclick="dl('ss1','screenshot-1-welcome.png')">Download</button>
+</div>
+<div class="card">
+<canvas id="ss2" width="1080" height="1920" style="max-width:200px"></canvas>
+<div class="info">Maanta (Today)</div>
+<button class="btn" onclick="dl('ss2','screenshot-2-maanta.png')">Download</button>
+</div>
+<div class="card">
+<canvas id="ss3" width="1080" height="1920" style="max-width:200px"></canvas>
+<div class="info">Yoolalka (Goals)</div>
+<button class="btn" onclick="dl('ss3','screenshot-3-yoolalka.png')">Download</button>
+</div>
+<div class="card">
+<canvas id="ss4" width="1080" height="1920" style="max-width:200px"></canvas>
+<div class="info">Xasuusinta (Reminders)</div>
+<button class="btn" onclick="dl('ss4','screenshot-4-reminders.png')">Download</button>
+</div>
+</div>
+</div>
+
+<div class="section">
+<h2>Store Listing Text</h2>
+<div class="texts">
+<h3>Short Description (80 chars max)</h3>
+<pre id="shortDesc">Abaabul hawlahaaga, raac yoolalkaaga, hel xasuusin – Af Soomaali.</pre>
+<button class="btn copy-btn" onclick="copyText('shortDesc')">Copy</button>
+
+<h3>Full Description</h3>
+<pre id="fullDesc">Xasuus waa app-ka ugu fudud ee ugu awooda badan ee aad ku abaabuli karto maalintaada, ku maarayn karto hawlahaaga, ku raaci karto yoolalkaaga.
+
+✅ Maanta – Arag hawlaha maanta ku soo aaddan. Hawlaha la dhaafay waa la muujiyaa.
+
+✅ Hawlaha – Ku dar hawlo cusub waqti, maalin, iyo mudnaan (Hoose, Dhexe, Sare). Dooro goorma laguu xasuusiyo – 10 daqiiqo kahor, 30 daqiiqo kahor, ama 1 saac kahor.
+
+✅ Yoolalka – Samee yoolal toddobaadleh, billeh, saddex biloodleh, ama sannadleh. Dooro maalinta, waqtiga, iyo inta jeer ee laguu xasuusiyo yoolalkaaga.
+
+✅ Xasuusin – Hesho xasuusin toos ah oo kugu xasuusisa hawlahaaga iyo yoolalkaaga. Weligaa ma illoobi doontid hawl muhiim ah.
+
+✅ Af Soomaali – Dhammaan app-ka wuxuu ku qoran yahay Af Soomaali oo kaliya.
+
+✅ Bilaash – Lacag la'aan, xayeysiis la'aan.
+
+Xasuus – Abaabul Maalintaada. Gaadh Yoolalkaaga.</pre>
+<button class="btn copy-btn" onclick="copyText('fullDesc')">Copy</button>
+</div>
+</div>
+
+<script>
+function dl(id,name){
+  var c=document.getElementById(id);
+  var a=document.createElement('a');
+  a.download=name;
+  a.href=c.toDataURL('image/png');
+  a.click();
+}
+function copyText(id){
+  var t=document.getElementById(id).textContent;
+  navigator.clipboard.writeText(t);
+  alert('Copied!');
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+function drawPurpleBg(ctx,w,h,r){
+  var g=ctx.createLinearGradient(0,0,w,h);
+  g.addColorStop(0,'#4338ca');
+  g.addColorStop(0.4,'#5b21b6');
+  g.addColorStop(1,'#6d28d9');
+  roundRect(ctx,0,0,w,h,r);
+  ctx.fillStyle=g;
+  ctx.fill();
+}
+
+function drawFlower(ctx,cx,cy,size){
+  var petals=6;
+  var petalR=size*0.42;
+  var dist=size*0.38;
+  for(var i=0;i<petals;i++){
+    var angle=(Math.PI*2/petals)*i - Math.PI/2;
+    var px=cx+Math.cos(angle)*dist;
+    var py=cy+Math.sin(angle)*dist;
+    ctx.beginPath();
+    ctx.arc(px,py,petalR,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,'+(0.25+i*0.04)+')';
+    ctx.fill();
+  }
+  ctx.beginPath();
+  ctx.arc(cx,cy,size*0.12,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,255,255,0.95)';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(cx,cy,size*0.06,0,Math.PI*2);
+  ctx.fillStyle='#4338ca';
+  ctx.fill();
+}
+
+function drawPhoneMockup(ctx,w,h,topColor,title,items,accent){
+  var g=ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0,topColor||'#f8fafc');
+  g.addColorStop(1,'#f1f5f9');
+  ctx.fillStyle=g;
+  ctx.fillRect(0,0,w,h);
+
+  ctx.fillStyle='#f8fafc';
+  ctx.fillRect(0,0,w,220);
+
+  ctx.fillStyle='#0f172a';
+  ctx.font='bold 72px system-ui';
+  ctx.fillText(title,80,160);
+
+  var startY=300;
+  for(var i=0;i<items.length;i++){
+    var item=items[i];
+    roundRect(ctx,60,startY,w-120,160,24);
+    ctx.fillStyle='#ffffff';
+    ctx.fill();
+    ctx.shadowColor='rgba(0,0,0,0.06)';
+    ctx.shadowBlur=8;
+    ctx.shadowOffsetY=2;
+    ctx.fill();
+    ctx.shadowColor='transparent';
+    ctx.shadowBlur=0;
+    ctx.shadowOffsetY=0;
+
+    roundRect(ctx,84,startY+24,112,112,20);
+    ctx.fillStyle=accent||'#ede9fe';
+    ctx.fill();
+
+    ctx.fillStyle=item.iconColor||'#6d28d9';
+    ctx.font='bold 48px system-ui';
+    ctx.fillText(item.icon||'●',108,startY+96);
+
+    ctx.fillStyle='#1e293b';
+    ctx.font='bold 42px system-ui';
+    ctx.fillText(item.text,220,startY+72);
+
+    ctx.fillStyle='#94a3b8';
+    ctx.font='36px system-ui';
+    ctx.fillText(item.sub||'',220,startY+118);
+
+    startY+=190;
+  }
+}
+
+// === ICON 512x512 ===
+(function(){
+  var c=document.getElementById('icon');
+  var ctx=c.getContext('2d');
+  drawPurpleBg(ctx,512,512,96);
+  var sg=ctx.createLinearGradient(0,0,512,512);
+  sg.addColorStop(0,'rgba(255,255,255,0.2)');
+  sg.addColorStop(0.7,'rgba(255,255,255,0)');
+  roundRect(ctx,0,0,512,512,96);
+  ctx.fillStyle=sg;
+  ctx.fill();
+  drawFlower(ctx,256,256,180);
+})();
+
+// === FEATURE GRAPHIC 1024x500 ===
+(function(){
+  var c=document.getElementById('feature');
+  var ctx=c.getContext('2d');
+  var g=ctx.createLinearGradient(0,0,1024,500);
+  g.addColorStop(0,'#4338ca');
+  g.addColorStop(0.5,'#5b21b6');
+  g.addColorStop(1,'#6d28d9');
+  ctx.fillStyle=g;
+  ctx.fillRect(0,0,1024,500);
+
+  var sg=ctx.createLinearGradient(0,0,1024,0);
+  sg.addColorStop(0,'rgba(255,255,255,0.08)');
+  sg.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=sg;
+  ctx.fillRect(0,0,1024,500);
+
+  drawFlower(ctx,200,250,140);
+
+  ctx.fillStyle='#ffffff';
+  ctx.font='bold 96px system-ui';
+  ctx.fillText('Xasuus',420,230);
+
+  ctx.fillStyle='rgba(255,255,255,0.7)';
+  ctx.font='36px system-ui';
+  ctx.fillText('Abaabul Maalintaada.',420,300);
+  ctx.fillText('Gaadh Yoolalkaaga.',420,350);
+
+  ctx.fillStyle='rgba(255,255,255,0.15)';
+  roundRect(ctx,420,400,200,56,12);
+  ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.9)';
+  ctx.font='bold 28px system-ui';
+  ctx.fillText('Bilaash',476,438);
+})();
+
+// === SCREENSHOT 1: Welcome ===
+(function(){
+  var c=document.getElementById('ss1');
+  var ctx=c.getContext('2d');
+  var g=ctx.createLinearGradient(0,0,0,1920);
+  g.addColorStop(0,'#4338ca');
+  g.addColorStop(1,'#6d28d9');
+  ctx.fillStyle=g;
+  ctx.fillRect(0,0,1080,1920);
+
+  drawFlower(ctx,540,600,240);
+
+  ctx.fillStyle='#ffffff';
+  ctx.font='bold 120px system-ui';
+  ctx.textAlign='center';
+  ctx.fillText('Xasuus',540,940);
+
+  ctx.fillStyle='rgba(255,255,255,0.7)';
+  ctx.font='44px system-ui';
+  ctx.fillText('Abaabul Maalintaada.',540,1040);
+  ctx.fillText('Gaadh Yoolalkaaga.',540,1100);
+
+  roundRect(ctx,300,1260,480,100,24);
+  ctx.fillStyle='#ffffff';
+  ctx.fill();
+  ctx.fillStyle='#6d28d9';
+  ctx.font='bold 44px system-ui';
+  ctx.fillText('Bilow',540,1326);
+  ctx.textAlign='left';
+})();
+
+// === SCREENSHOT 2: Maanta ===
+(function(){
+  var c=document.getElementById('ss2');
+  var ctx=c.getContext('2d');
+  drawPhoneMockup(ctx,1080,1920,'#f8fafc','Maanta',[
+    {icon:'📚',text:'Akhri buug cusub',sub:'Sare · 2:00 PM',iconColor:'#6d28d9'},
+    {icon:'🏃',text:'Jimicsi subax',sub:'Dhexe · 7:00 AM',iconColor:'#059669'},
+    {icon:'💻',text:'Coding practice',sub:'Sare · 4:00 PM',iconColor:'#6d28d9'},
+    {icon:'📝',text:'Qor liiska maanta',sub:'Hoose · 9:00 AM',iconColor:'#f59e0b'},
+    {icon:'🛒',text:'Wax ka iibso suuqa',sub:'Dhexe · 5:30 PM',iconColor:'#059669'},
+    {icon:'📞',text:'La hadal saaxiibka',sub:'Hoose · 8:00 PM',iconColor:'#f59e0b'},
+    {icon:'🧹',text:'Nadiifi guriga',sub:'Dhexe · 10:00 AM',iconColor:'#059669'},
+  ],'#ede9fe');
+
+  ctx.fillStyle='#94a3b8';
+  ctx.font='36px system-ui';
+  ctx.fillText('Khamiis, 19 Febraayo',80,100);
+
+  roundRect(ctx,60,1740,200,60,12);
+  ctx.fillStyle='#6d28d9';ctx.fill();
+  ctx.fillStyle='#fff';ctx.font='bold 28px system-ui';ctx.fillText('7 hawl',100,1780);
+})();
+
+// === SCREENSHOT 3: Yoolalka ===
+(function(){
+  var c=document.getElementById('ss3');
+  var ctx=c.getContext('2d');
+  drawPhoneMockup(ctx,1080,1920,'#f8fafc','Yoolalka',[
+    {icon:'🎯',text:'Baro luuqad cusub',sub:'Bil kasta · May 2026',iconColor:'#6d28d9'},
+    {icon:'💪',text:'Jimicsi maalinle',sub:'Toddobaad · Mar 2026',iconColor:'#059669'},
+    {icon:'📖',text:'Akhri 12 buug',sub:'Sanad · Dec 2026',iconColor:'#f59e0b'},
+    {icon:'💰',text:'Keydi lacag',sub:'Saddex Bilood · Jun 2026',iconColor:'#059669'},
+  ],'#ede9fe');
+
+  roundRect(ctx,60,1200,960,200,24);
+  ctx.fillStyle='#ffffff';ctx.fill();
+  ctx.shadowColor='rgba(0,0,0,0.05)';ctx.shadowBlur=6;ctx.shadowOffsetY=2;ctx.fill();
+  ctx.shadowColor='transparent';ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+
+  roundRect(ctx,84,1224,80,80,16);
+  ctx.fillStyle='#ede9fe';ctx.fill();
+  ctx.fillStyle='#6d28d9';ctx.font='bold 40px system-ui';ctx.fillText('🔔',100,1282);
+
+  ctx.fillStyle='#1e293b';ctx.font='bold 36px system-ui';ctx.fillText('Xasuusin yoolalka',190,1264);
+  ctx.fillStyle='#94a3b8';ctx.font='32px system-ui';ctx.fillText('Axad 7:00 PM, Usbuuc walba',190,1310);
+})();
+
+// === SCREENSHOT 4: Reminders ===
+(function(){
+  var c=document.getElementById('ss4');
+  var ctx=c.getContext('2d');
+  var g=ctx.createLinearGradient(0,0,0,1920);
+  g.addColorStop(0,'#4338ca');
+  g.addColorStop(1,'#6d28d9');
+  ctx.fillStyle=g;
+  ctx.fillRect(0,0,1080,1920);
+
+  ctx.fillStyle='#ffffff';
+  ctx.font='bold 80px system-ui';
+  ctx.textAlign='center';
+  ctx.fillText('Xasuusin',540,300);
+
+  ctx.fillStyle='rgba(255,255,255,0.7)';
+  ctx.font='40px system-ui';
+  ctx.fillText('Weligaa ma illoobi doontid',540,380);
+  ctx.fillText('hawl muhiim ah',540,430);
+  ctx.textAlign='left';
+
+  var cards=[
+    {icon:'⏰',title:'10 daqiiqo kahor',desc:'Hawsha waqtigeeda ku dhow yahay'},
+    {icon:'🔔',title:'30 daqiiqo kahor',desc:'Isu diyaari hawsha soo socota'},
+    {icon:'⏳',title:'1 saac kahor',desc:'Waqti ku filan inaad diyaar garowdo'},
+    {icon:'📅',title:'Waqtiga hawsha',desc:'Xasuusin toos ah markii waqtigu gaadho'},
+  ];
+  var sy=540;
+  for(var i=0;i<cards.length;i++){
+    roundRect(ctx,100,sy,880,220,28);
+    ctx.fillStyle='rgba(255,255,255,0.12)';
+    ctx.fill();
+
+    ctx.fillStyle='rgba(255,255,255,0.2)';
+    roundRect(ctx,132,sy+36,100,100,20);
+    ctx.fill();
+
+    ctx.font='52px system-ui';
+    ctx.fillStyle='#fff';
+    ctx.fillText(cards[i].icon,152,sy+108);
+
+    ctx.fillStyle='#ffffff';
+    ctx.font='bold 44px system-ui';
+    ctx.fillText(cards[i].title,260,sy+90);
+
+    ctx.fillStyle='rgba(255,255,255,0.6)';
+    ctx.font='34px system-ui';
+    ctx.fillText(cards[i].desc,260,sy+148);
+
+    sy+=260;
+  }
+
+  drawFlower(ctx,540,1680,100);
+})();
+</script>
+</body>
+</html>

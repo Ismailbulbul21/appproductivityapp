@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>Qorsheyn – Iska xir, Scheduled &amp; Group Focus Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --accent: #059669;
+      --accent-light: #34d399;
+      --accent-dark: #047857;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --text-secondary: #64748b;
+      --border: #e2e8f0;
+      --red: #dc2626;
+      --radius: 16px;
+      --radius-lg: 24px;
+      --shadow: 0 4px 12px rgba(0,0,0,0.06);
+      --safe-top: env(safe-area-inset-top, 20px);
+      --safe-bottom: env(safe-area-inset-bottom, 24px);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      max-width: 430px;
+      margin: 0 auto;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    .phone-frame {
+      min-height: 100vh;
+      padding-top: var(--safe-top);
+      padding-bottom: calc(60px + var(--safe-bottom));
+      position: relative;
+    }
+    /* ----- Screens (stacked, show one) ----- */
+    .screen { display: none; padding: 0 20px; }
+    .screen.active { display: block; animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* ----- Focus home ----- */
+    .header { padding: 20px 0 16px; }
+    .header .date { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+    .header h1 { font-size: 28px; font-weight: 800; color: var(--text); margin-top: 4px; }
+    .header .sub { font-size: 15px; color: var(--text-secondary); margin-top: 4px; }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .card-focus {
+      background: linear-gradient(145deg, #ecfdf5 0%, #d1fae5 100%);
+      border: 2px solid var(--accent-light);
+    }
+    .card-focus .icon-wrap {
+      width: 56px; height: 56px;
+      background: var(--accent);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 14px;
+    }
+    .card-focus .icon-wrap svg { width: 28px; height: 28px; color: white; }
+    .card-focus h2 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .card-focus p { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.4; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 24px; border-radius: 14px; font-size: 16px; font-weight: 700; border: none; cursor: pointer; font-family: inherit; }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: var(--accent-dark); }
+    .btn-secondary { background: var(--bg); color: var(--text); border: 2px solid var(--border); }
+    .btn-secondary:hover { background: #f1f5f9; }
+
+    .section-title { font-size: 14px; font-weight: 600; color: var(--text-secondary); margin: 20px 0 10px; }
+    .app-row {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--card); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .app-row .app-icon { width: 44px; height: 44px; border-radius: 10px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .app-row .app-name { flex: 1; font-weight: 600; font-size: 15px; }
+    .app-row .app-hint { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .badge { font-size: 11px; font-weight: 700; color: var(--accent); background: #d1fae5; padding: 4px 10px; border-radius: 8px; }
+
+    /* ----- New session modal ----- */
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; display: none; align-items: flex-end; justify-content: center; }
+    .modal.active { display: flex; }
+    .modal-sheet {
+      background: var(--card); border-radius: 24px 24px 0 0; width: 100%; max-width: 430px; max-height: 88vh; overflow: hidden; display: flex; flex-direction: column;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.12);
+    }
+    .modal-handle { width: 40px; height: 4px; background: #d1d5db; border-radius: 2px; margin: 12px auto 16px; }
+    .modal-title { font-size: 20px; font-weight: 800; padding: 0 24px 16px; display: flex; align-items: center; gap: 12px; }
+    .modal-title .icon { width: 48px; height: 48px; background: #ecfdf5; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+    .modal-body { flex: 1; overflow-y: auto; padding: 0 24px 24px; }
+    .duration-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+    .duration-chips.days { margin-top: 4px; margin-bottom: 16px; }
+    .chip {
+      padding: 14px 20px; border-radius: 14px; font-weight: 700; font-size: 15px; cursor: pointer; border: 2px solid transparent; background: #f1f5f9; color: var(--text-secondary);
+    }
+    .chip.selected { background: var(--accent); color: white; border-color: var(--accent); }
+    .chip:not(.selected):hover { background: #e2e8f0; }
+    .duration-summary {
+      font-size: 15px; font-weight: 700; color: var(--accent); margin-top: 8px; margin-bottom: 16px;
+      padding: 12px 16px; background: #ecfdf5; border-radius: 12px; display: inline-block;
+    }
+    .custom-duration { display: none; margin-top: 12px; }
+    .custom-duration.visible { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .custom-duration input {
+      width: 80px; padding: 12px 14px; border: 2px solid var(--border); border-radius: 12px;
+      font-size: 16px; font-weight: 700; text-align: center; font-family: inherit;
+    }
+    .custom-duration input:focus { outline: none; border-color: var(--accent); }
+    .custom-duration .unit { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+    .custom-duration .hint { font-size: 12px; color: var(--text-secondary); width: 100%; margin-top: 4px; }
+    .label { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 10px; }
+    .app-check { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+    .app-check:last-child { border-bottom: none; }
+    .app-check input { width: 22px; height: 22px; accent-color: var(--accent); cursor: pointer; }
+    .app-check .app-icon { width: 40px; height: 40px; border-radius: 10px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .app-check .app-name { font-weight: 600; font-size: 15px; }
+    .modal-footer { padding: 20px 24px; padding-bottom: calc(20px + var(--safe-bottom)); border-top: 1px solid var(--border); }
+    .modal-footer .btn { width: 100%; padding: 16px; font-size: 17px; }
+
+    /* ----- Focus active (timer running) ----- */
+    .timer-wrap { text-align: center; padding: 32px 0 24px; }
+    .timer-circle {
+      width: 220px; height: 220px; margin: 0 auto 24px; border-radius: 50%;
+      background: conic-gradient(var(--accent) 0deg var(--pct, 0deg), #e2e8f0 var(--pct, 0deg));
+      display: flex; align-items: center; justify-content: center;
+    }
+    .timer-circle-inner {
+      width: 188px; height: 188px; border-radius: 50%; background: var(--card); display: flex; align-items: center; justify-content: center; flex-direction: column; box-shadow: inset 0 0 0 4px var(--bg);
+    }
+    .timer-value { font-size: 48px; font-weight: 800; color: var(--text); letter-spacing: -1px; }
+    .timer-label { font-size: 14px; color: var(--text-secondary); font-weight: 500; margin-top: 4px; }
+    .timer-status { font-size: 15px; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
+    .blocked-reminder { font-size: 13px; color: var(--text-secondary); max-width: 280px; margin: 0 auto 24px; line-height: 1.5; }
+    .btn-end { background: #fef2f2; color: var(--red); border: 2px solid #fecaca; }
+    .btn-end:hover { background: #fee2e2; }
+
+    /* ----- Block overlay (when user opens blocked app) ----- */
+    .block-overlay {
+      position: fixed; inset: 0; background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); z-index: 200;
+      display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center;
+    }
+    .block-overlay.active { display: flex; }
+    .block-overlay .shield { width: 100px; height: 100px; background: rgba(245, 158, 11, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; font-size: 48px; }
+    .block-overlay h2 { font-size: 22px; font-weight: 800; color: white; margin-bottom: 10px; }
+    .block-overlay p { font-size: 15px; color: #94a3b8; margin-bottom: 28px; line-height: 1.5; }
+    .block-overlay .btn { min-width: 200px; }
+
+    /* ----- Tab bar ----- */
+    .tab-bar {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px;
+      height: calc(60px + var(--safe-bottom)); padding-bottom: var(--safe-bottom);
+      background: var(--card); border-radius: 20px 20px 0 0; box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+      display: flex; align-items: flex-start; justify-content: space-around; padding-top: 10px;
+    }
+    .tab { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 12px; cursor: pointer; color: var(--text-secondary); text-decoration: none; font-size: 11px; font-weight: 600; }
+    .tab.active { color: var(--accent); }
+    .tab svg { width: 24px; height: 24px; }
+
+    /* ----- Summary / Scheduled feature ----- */
+    .summary-box {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border: 1px solid #93c5fd;
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #1e40af;
+      line-height: 1.5;
+    }
+    .summary-box strong { display: block; margin-bottom: 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .card-schedule {
+      background: linear-gradient(145deg, #fef3c7 0%, #fde68a 100%);
+      border: 2px solid #f59e0b;
+    }
+    .card-schedule .icon-wrap { background: #d97706; }
+    .card-schedule h2 { font-size: 17px; }
+    .card-schedule p { font-size: 13px; }
+    .schedule-list { margin-top: 16px; }
+    .schedule-item {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      border-left: 4px solid var(--accent);
+    }
+    .schedule-item .when { font-size: 14px; font-weight: 700; color: var(--text); }
+    .schedule-item .apps { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+    .schedule-item .badge-upcoming { font-size: 10px; font-weight: 700; color: #b45309; background: #fef3c7; padding: 2px 8px; border-radius: 6px; margin-top: 6px; display: inline-block; }
+    .schedule-item .badge-active { background: #d1fae5; color: var(--accent); }
+    .datetime-row { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+    .datetime-row label { flex: 1; min-width: 120px; }
+    .datetime-row input { width: 100%; padding: 12px; border: 2px solid var(--border); border-radius: 12px; font-size: 14px; margin-top: 4px; }
+    .datetime-row input:focus { outline: none; border-color: var(--accent); }
+
+    /* ----- Group Focus ----- */
+    .card-group {
+      background: linear-gradient(145deg, #ede9fe 0%, #ddd6fe 100%);
+      border: 2px solid #8b5cf6;
+    }
+    .card-group .icon-wrap { background: #7c3aed; }
+    .card-group h2 { font-size: 17px; }
+    .card-group p { font-size: 13px; }
+    .invite-code-box {
+      background: var(--text);
+      color: white;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 8px;
+      padding: 20px 24px;
+      border-radius: var(--radius);
+      text-align: center;
+      margin: 16px 0;
+      font-family: 'Inter', monospace;
+    }
+    .invite-code-hint { font-size: 13px; color: var(--text-secondary); margin-top: 8px; }
+    .join-input {
+      width: 100%;
+      padding: 18px 20px;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 6px;
+      text-align: center;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      text-transform: uppercase;
+    }
+    .join-input:focus { outline: none; border-color: var(--accent); }
+    .member-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ede9fe;
+      color: #5b21b6;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 20px;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+    .member-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #7c3aed; }
+    .group-strict-badge {
+      background: #fef3c7;
+      color: #b45309;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .timer-group-badge {
+      font-size: 13px;
+      font-weight: 700;
+      color: #7c3aed;
+      background: #ede9fe;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+    .no-end-early-note { font-size: 13px; color: var(--text-secondary); margin-top: 12px; font-style: italic; }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+    <!-- Screen 1: Focus home (Iska xir) -->
+    <div id="screen-focus-home" class="screen active">
+      <div class="header">
+        <div class="date">Isniin, 18 Febraayo</div>
+        <h1>Iska xir</h1>
+        <div class="sub">Ku xir wagtigaaga, ka xiiro apps-ka waawayn</div>
+      </div>
+
+      <!-- Summary: Scheduled App Blocking feature -->
+      <div class="summary-box">
+        <strong>Scheduled blocking (summary)</strong>
+        User picks apps and a <strong>scheduled time</strong> (e.g. 9:00–17:00 or “for 1 day”). At <strong>start time</strong> apps lock automatically; at <strong>end time</strong> they unlock. Android: AlarmManager starts/stops blocking without opening the app; iOS: notification at start time to open the app and start manually.
+      </div>
+
+      <div class="card card-focus" onclick="showScreen('screen-new-session'); document.getElementById('modal-new-session').classList.add('active');">
+        <div class="icon-wrap">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h2>Bilow focus session</h2>
+        <p>Dooro wakhti (e.g. 25 daqiiqo) iyo apps-ka aad rabto in la xiro. Wakhtigaas apps-kaas ma furan karaan.</p>
+        <button type="button" class="btn btn-primary">Bilow</button>
+      </div>
+      <div class="section-title">Apps-ka la xiro (waa la xiri doonaa marka aad bilowdo)</div>
+      <div class="app-row">
+        <div class="app-icon">📷</div>
+        <div>
+          <div class="app-name">Instagram</div>
+          <div class="app-hint">La xiri doono marka aad bilowdo</div>
+        </div>
+        <span class="badge">Xiro</span>
+      </div>
+      <div class="app-row">
+        <div class="app-icon">🎵</div>
+        <div>
+          <div class="app-name">TikTok</div>
+          <div class="app-hint">La xiri doono marka aad bilowdo</div>
+        </div>
+        <span class="badge">Xiro</span>
+      </div>
+      <div class="app-row">
+        <div class="app-icon">▶️</div>
+        <div>
+          <div class="app-name">YouTube</div>
+          <div class="app-hint">La xiri doono marka aad bilowdo</div>
+        </div>
+        <span class="badge">Xiro</span>
+      </div>
+      <button type="button" class="btn btn-secondary" style="width:100%; margin-top:12px;">Dooro apps-ka la xiro</button>
+
+      <!-- Group Focus card -->
+      <div class="section-title" style="margin-top: 24px;">Kooxda (Group focus)</div>
+      <div class="card card-group" onclick="showScreen('screen-group-choices');">
+        <div class="icon-wrap">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        </div>
+        <h2>Focus kooxda</h2>
+        <p>Bilow session wada jir ah: isla apps la xiro, isla wakhti, isla strict mode. Wakhti isku mid ah ayaa la furin.</p>
+        <button type="button" class="btn btn-primary" style="margin-top: 8px;">Bilow ama ku biir</button>
+      </div>
+
+      <!-- NEW: Scheduled blocking card -->
+      <div class="section-title" style="margin-top: 24px;">Qorsheyn (Scheduled blocking)</div>
+      <div class="card card-schedule" onclick="document.getElementById('modal-new-schedule').classList.add('active');">
+        <div class="icon-wrap">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        </div>
+        <h2>Qorshee xiritaanka apps</h2>
+        <p>Set start &amp; end time. Android: apps lock/unlock automatically at those times. iOS: you get a reminder to open the app at start time.</p>
+        <button type="button" class="btn btn-primary" style="margin-top: 8px;">Qorshee cusub</button>
+      </div>
+
+      <div class="schedule-list" id="schedule-list">
+        <div class="schedule-item">
+          <span class="when">Maanta 9:00 – 17:00</span>
+          <div class="apps">Instagram, TikTok, YouTube</div>
+          <span class="badge-upcoming">Soo socda</span>
+        </div>
+        <div class="schedule-item">
+          <span class="when">Berri 8:00 – 12:00</span>
+          <div class="apps">Instagram, X (Twitter)</div>
+          <span class="badge-upcoming">Soo socda</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Group Focus: Choose Create or Join -->
+    <div id="screen-group-choices" class="screen">
+      <div class="header">
+        <div class="date">Focus kooxda</div>
+        <h1>Bilow ama ku biir</h1>
+        <div class="sub">Abuur session cusub ama geli code-ka laguugu soo diray</div>
+      </div>
+      <div class="card card-group" onclick="document.getElementById('modal-create-group').classList.add('active');">
+        <div class="icon-wrap">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+        </div>
+        <h2>Abuur session cusub</h2>
+        <p>Qeex goorma bilaabmayo, wakhtiga, apps-ka la xiro, strict mode. Code-ka waa la bixin doonaa si kooxda loo soo wada geliyo.</p>
+        <button type="button" class="btn btn-primary">Abuur</button>
+      </div>
+      <div class="card" onclick="showScreen('screen-join-code');">
+        <div style="width:48px;height:48px;background:#e2e8f0;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+          <svg width="24" height="24" fill="none" stroke="#64748b" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+        </div>
+        <h2 style="font-size:17px;margin-bottom:6px;">Ku biir code-ka</h2>
+        <p style="font-size:14px;color:var(--text-secondary);margin-bottom:14px;">Geli code-ka (e.g. ABC123) ee laguu soo diray si aad ugu biirto session-ka.</p>
+        <button type="button" class="btn btn-secondary">Geli code</button>
+      </div>
+      <button type="button" class="btn btn-secondary" style="width:100%; margin-top:12px;" onclick="showScreen('screen-focus-home');">← Ka noqo Iska xir</button>
+    </div>
+
+    <!-- Group Focus: Join by code -->
+    <div id="screen-join-code" class="screen">
+      <div class="header">
+        <div class="date">Ku biir session</div>
+        <h1>Geli code-ka</h1>
+        <div class="sub">Geli code-ka 6 xaraf (e.g. ABC123)</div>
+      </div>
+      <div class="label">CODE-KA SOO DIRAY</div>
+      <input type="text" class="join-input" id="join-code-input" maxlength="6" placeholder="ABC123" autocomplete="off" />
+      <p class="invite-code-hint">Code-ka waa inuu ahaadaa 6 xaraf. Ka helnaa qofka session abuuray.</p>
+      <button type="button" class="btn btn-primary" style="width:100%; margin-top:16px;" onclick="submitJoinCode();">Ku biir</button>
+      <button type="button" class="btn btn-secondary" style="width:100%; margin-top:10px;" onclick="showScreen('screen-group-choices');">← Dib u noqo</button>
+    </div>
+
+    <!-- Group Focus: After join — waiting for start -->
+    <div id="screen-group-waiting" class="screen">
+      <div class="header">
+        <div class="date">Waad ku biirtay</div>
+        <h1>Session-ka waa diiwaan gashay</h1>
+        <div class="sub">Sug inta ka hor inta goorma la bilaabayo</div>
+      </div>
+      <div class="card">
+        <div class="timer-group-badge">Focus kooxda</div>
+        <div class="when" style="font-size:20px;font-weight:800;color:var(--text);margin:8px 0 4px;">Maanta 14:00</div>
+        <div class="apps" style="font-size:14px;color:var(--text-secondary);">Bilaabmayo 14:00 • 1 saac</div>
+        <div style="margin-top:12px;">
+          <span class="member-pill"><span class="dot"></span>Adiga</span>
+          <span class="member-pill"><span class="dot"></span>Calì</span>
+          <span class="member-pill"><span class="dot"></span>Maxamed</span>
+        </div>
+        <div class="group-strict-badge">🔒 Strict mode: ma jiraan &quot;End early&quot;</div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-top:12px;">Instagram, TikTok, YouTube ayaa la xiri doono wakhtigaas.</p>
+      </div>
+      <button type="button" class="btn btn-primary" style="width:100%; margin-top:8px;" onclick="showScreen('screen-group-timer'); startGroupFakeTimer();">Tus wakhtiga socda (prototype)</button>
+      <button type="button" class="btn btn-secondary" style="width:100%; margin-top:10px;" onclick="showScreen('screen-focus-home');">Ka bax session-ka</button>
+    </div>
+
+    <!-- Group Focus: Invite / share code (creator view) -->
+    <div id="screen-group-invite" class="screen">
+      <div class="header">
+        <div class="date">Session waa la abuuray</div>
+        <h1>Wadaag code-ka</h1>
+        <div class="sub">Kooxda geli code-kan si ay ugu biiraan</div>
+      </div>
+      <div class="card">
+        <div class="label">CODE-KA</div>
+        <div class="invite-code-box" id="display-invite-code">ABC123</div>
+        <p class="invite-code-hint">Wadaag code-kan (e.g. WhatsApp, SMS). App link: app://group/ABC123</p>
+        <div style="margin-top:16px;">
+          <span class="member-pill"><span class="dot"></span>Adiga (abuuray)</span>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-top:12px;">Maanta 14:00 • 1 saac • Instagram, TikTok, YouTube • Strict mode on</p>
+      </div>
+      <button type="button" class="btn btn-primary" style="width:100%;" onclick="navigator.clipboard && navigator.clipboard.writeText('ABC123'); alert('Code copied!');">Copy code</button>
+      <button type="button" class="btn btn-secondary" style="width:100%; margin-top:10px;" onclick="showScreen('screen-group-waiting');">Sug bilaabashada</button>
+      <button type="button" class="btn btn-secondary" style="width:100%; margin-top:10px;" onclick="showScreen('screen-focus-home');">Ka bax</button>
+    </div>
+
+    <!-- Group Focus: Timer active (same apps, same end time, no End early) -->
+    <div id="screen-group-timer" class="screen">
+      <div class="header">
+        <div class="date">Focus kooxda</div>
+        <h1>Wakhti socda</h1>
+      </div>
+      <div class="timer-wrap">
+        <p class="timer-group-badge">3 xubnood • Strict mode</p>
+        <p class="timer-status">● Focus kooxda waa firfircoon</p>
+        <div class="timer-circle" style="--pct: 200deg;">
+          <div class="timer-circle-inner">
+            <span class="timer-value" id="group-timer-display">52:18</span>
+            <span class="timer-label">ka hadhay</span>
+          </div>
+        </div>
+        <p class="blocked-reminder">Instagram, TikTok, YouTube waa la xirey. Isla wakhtiga ayaa la furin doona (strict mode).</p>
+        <p class="no-end-early-note">Ma jiraan &quot;End early&quot; — sug inta end_time uu gaaro.</p>
+        <button type="button" class="btn btn-secondary" style="width:100%; font-size:13px; opacity:0.7;" disabled>End early (disabled in group strict)</button>
+        <button type="button" class="btn btn-secondary" style="width:100%; margin-top:16px; font-size:12px;" onclick="showScreen('screen-focus-home');">Ka noqo Iska xir (prototype)</button>
+      </div>
+    </div>
+
+    <!-- Modal: Create group session -->
+    <div id="modal-create-group" class="modal" onclick="if(event.target===this) this.classList.remove('active')">
+      <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div class="modal-handle"></div>
+        <div class="modal-title">
+          <div class="icon">👥</div>
+          <span>Abuur focus kooxda</span>
+        </div>
+        <div class="modal-body">
+          <div class="label">GOORMA BILAABMAYAA</div>
+          <div class="datetime-row">
+            <label>
+              <span class="unit">Taariikh</span>
+              <input type="date" id="group-start-date" value="2025-02-18" />
+            </label>
+            <label>
+              <span class="unit">Wakhti</span>
+              <input type="time" id="group-start-time" value="14:00" />
+            </label>
+          </div>
+          <div class="label">WAKHTIGA (MUDDO)</div>
+          <div class="duration-chips" id="group-duration-chips">
+            <button type="button" class="chip" data-min="25">25 daqiiqo</button>
+            <button type="button" class="chip" data-min="45">45 daqiiqo</button>
+            <button type="button" class="chip selected" data-min="60">1 saac</button>
+            <button type="button" class="chip" data-min="90">1:30</button>
+            <button type="button" class="chip" data-min="120">2 saac</button>
+          </div>
+          <div class="label">Apps-ka la xiri doono (kooxda oo dhan)</div>
+          <label class="app-check"><input type="checkbox" checked /> <div class="app-icon">📷</div> <span class="app-name">Instagram</span></label>
+          <label class="app-check"><input type="checkbox" checked /> <div class="app-icon">🎵</div> <span class="app-name">TikTok</span></label>
+          <label class="app-check"><input type="checkbox" checked /> <div class="app-icon">▶️</div> <span class="app-name">YouTube</span></label>
+          <label class="app-check"><input type="checkbox" /> <div class="app-icon">🐦</div> <span class="app-name">X (Twitter)</span></label>
+          <div class="label" style="margin-top:16px;">STRICT MODE (kooxda)</div>
+          <label class="app-check" style="border-bottom:none;">
+            <input type="checkbox" checked id="group-strict-check" />
+            <span class="app-name">Strict mode: ma jiraan &quot;End early&quot;, isla end_time ayaa la furin</span>
+          </label>
+          <div class="summary-box" style="margin-top:16px; font-size:12px;">
+            <strong>Xusuus</strong>
+            Xiritaanka waa locally (phone kasta wuu xiraa). Server wuxuu isku xiri doonaa wakhtiga iyo config-ka.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="document.getElementById('modal-create-group').classList.remove('active'); showScreen('screen-group-invite');">Abuur &amp; bixin code</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 2: Focus session active (timer running) -->
+    <div id="screen-timer-active" class="screen">
+      <div class="header">
+        <div class="date">Focus session</div>
+        <h1>Wakhti socda</h1>
+      </div>
+      <div class="timer-wrap">
+        <p class="timer-status">● Focus waa firfircoon</p>
+        <div class="timer-circle" style="--pct: 120deg;">
+          <div class="timer-circle-inner">
+            <span class="timer-value" id="timer-display">24:35</span>
+            <span class="timer-label">ka hadhay</span>
+          </div>
+        </div>
+        <p class="blocked-reminder">Instagram, TikTok, YouTube waa la xirey. Haddii aad isku daydo inaad furo, shaashad xiritaan ayaa soo bixin doonta.</p>
+        <button type="button" class="btn btn-end" onclick="showScreen('screen-focus-home')">Dhamaystir session</button>
+        <button type="button" class="btn btn-secondary" style="width:100%; margin-top:12px; font-size:13px;" onclick="document.getElementById('block-overlay').classList.add('active');">Tus shaashad xiritaan (prototype)</button>
+      </div>
+    </div>
+
+    <!-- Modal: New focus session -->
+    <div id="modal-new-session" class="modal" onclick="if(event.target===this) this.classList.remove('active')">
+      <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div class="modal-handle"></div>
+        <div class="modal-title">
+          <div class="icon">⏱️</div>
+          <span>Focus session cusub</span>
+        </div>
+        <div class="modal-body">
+          <div class="label">WAKHTIGA</div>
+          <div class="duration-chips" id="duration-chips">
+            <button type="button" class="chip" data-min="1">1 daqiiqo</button>
+            <button type="button" class="chip" data-min="15">15 daqiiqo</button>
+            <button type="button" class="chip selected" data-min="25">25 daqiiqo</button>
+            <button type="button" class="chip" data-min="45">45 daqiiqo</button>
+            <button type="button" class="chip" data-min="60">1:00 hour</button>
+            <button type="button" class="chip" data-min="90">1:30 hour</button>
+            <button type="button" class="chip" data-min="120">2:00 hour</button>
+            <button type="button" class="chip chip-custom" data-min="custom" id="chip-custom">Custom</button>
+          </div>
+          <div class="label" style="margin-top: 16px;">Maalmood (max 1 toddobaad)</div>
+          <div class="duration-chips days" id="duration-chips-days">
+            <button type="button" class="chip" data-min="1440">1 maal</button>
+            <button type="button" class="chip" data-min="4320">3 maalmood</button>
+            <button type="button" class="chip" data-min="7200">5 maalmood</button>
+            <button type="button" class="chip" data-min="10080">1 toddobaad</button>
+          </div>
+          <div class="custom-duration" id="custom-duration">
+            <input type="number" id="custom-minutes" min="1" max="120" value="30" placeholder="daqiiqo" />
+            <span class="unit">daqiiqo</span>
+            <span class="hint">1–120 daqiiqo (2 saac max)</span>
+          </div>
+          <div class="duration-summary" id="duration-summary">25 daqiiqo</div>
+          <div class="label">Apps-ka aad rabto in la xiro (dooro)</div>
+          <label class="app-check"><input type="checkbox" checked /> <div class="app-icon">📷</div> <span class="app-name">Instagram</span></label>
+          <label class="app-check"><input type="checkbox" checked /> <div class="app-icon">🎵</div> <span class="app-name">TikTok</span></label>
+          <label class="app-check"><input type="checkbox" checked /> <div class="app-icon">▶️</div> <span class="app-name">YouTube</span></label>
+          <label class="app-check"><input type="checkbox" /> <div class="app-icon">🐦</div> <span class="app-name">X (Twitter)</span></label>
+          <label class="app-check"><input type="checkbox" /> <div class="app-icon">💬</div> <span class="app-name">Snapchat</span></label>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="document.getElementById('modal-new-session').classList.remove('active'); showScreen('screen-timer-active'); startFakeTimer();">Bilow focus</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: New schedule (Scheduled blocking) -->
+    <div id="modal-new-schedule" class="modal" onclick="if(event.target===this) this.classList.remove('active')">
+      <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div class="modal-handle"></div>
+        <div class="modal-title">
+          <div class="icon">📅</div>
+          <span>Qorshee xiritaan cusub</span>
+        </div>
+        <div class="modal-body">
+          <div class="label">GOORMA BILAABMAYAA</div>
+          <div class="datetime-row">
+            <label>
+              <span class="unit">Taariikh</span>
+              <input type="date" id="schedule-start-date" value="2025-02-18" />
+            </label>
+            <label>
+              <span class="unit">Wakhti</span>
+              <input type="time" id="schedule-start-time" value="09:00" />
+            </label>
+          </div>
+          <div class="label">WAKHTIGA (MUDDO)</div>
+          <div class="duration-chips" id="schedule-duration-chips">
+            <button type="button" class="chip" data-min="15">15 daqiiqo</button>
+            <button type="button" class="chip selected" data-min="25">25 daqiiqo</button>
+            <button type="button" class="chip" data-min="45">45 daqiiqo</button>
+            <button type="button" class="chip" data-min="60">1:00 hour</button>
+            <button type="button" class="chip" data-min="120">2:00 hour</button>
+            <button type="button" class="chip" data-min="1440">1 maal</button>
+            <button type="button" class="chip" data-min="4320">3 maalmood</button>
+          </div>
+          <div class="duration-summary" id="schedule-summary">Maanta 9:00 → 25 daqiiqo kadib</div>
+          <div class="label">Apps-ka la xiri doono</div>
+          <label class="app-check"><input type="checkbox" checked /> <div class="app-icon">📷</div> <span class="app-name">Instagram</span></label>
+          <label class="app-check"><input type="checkbox" checked /> <div class="app-icon">🎵</div> <span class="app-name">TikTok</span></label>
+          <label class="app-check"><input type="checkbox" checked /> <div class="app-icon">▶️</div> <span class="app-name">YouTube</span></label>
+          <label class="app-check"><input type="checkbox" /> <div class="app-icon">🐦</div> <span class="app-name">X (Twitter)</span></label>
+          <div class="summary-box" style="margin-top: 16px; font-size: 12px;">
+            <strong>Platform</strong>
+            Android: xiritaanka wuu bilaabmayaa/joogeyn doonaa wakhtiga la qorsheeyay (app furan ma aha). iOS: xusuus ayaa laguu soo dirin wakhtiga bilowga – fur app-ka si aad u bilowdo.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="addScheduleFromModal(); document.getElementById('modal-new-schedule').classList.remove('active');">Kaydi qorshe</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Block overlay (when user "opens" a blocked app during session) -->
+  <div id="block-overlay" class="block-overlay">
+    <div class="shield">🔒</div>
+    <h2>Focus session waa socda</h2>
+    <p>App-kan waa la xirey wakhtigan. Ka noqo Xasuus si aad u sii waddo ama sug inta ka hor inta session uu dhammaado.</p>
+    <button type="button" class="btn btn-primary" onclick="document.getElementById('block-overlay').classList.remove('active'); showScreen('screen-timer-active');">Ka noqo app-ka</button>
+  </div>
+
+  <!-- Tab bar -->
+  <nav class="tab-bar">
+    <a class="tab" href="#">☀️ Maanta</a>
+    <a class="tab" href="#">📋 Hawlaha</a>
+    <a class="tab" href="#">🎯 Yoolalka</a>
+    <a class="tab active" href="#">⏱️ Iska xir</a>
+    <a class="tab" href="#">⚙️ Dejinta</a>
+  </nav>
+
+  <script>
+    // Duration logic: all stored as total minutes. Minutes: 1-120. Days: 1440 (1d), 4320 (3d), 7200 (5d), 10080 (7d = 1 week). End time = now + (minutes * 60) seconds; persist endTime for long sessions so blocking survives app restart.
+    var selectedMinutes = 25;
+    var isCustom = false;
+
+    function formatDuration(minutes) {
+      if (minutes >= 1440) {
+        var d = Math.round(minutes / 1440);
+        if (d === 7) return '1 toddobaad';
+        if (d === 1) return '1 maal';
+        return d + ' maalmood';
+      }
+      if (minutes < 60) return minutes + ' daqiiqo';
+      var h = Math.floor(minutes / 60);
+      var m = minutes % 60;
+      var mm = m < 10 ? '0' + m : '' + m;
+      return h + ':' + mm + ' hour';
+    }
+
+    function updateSummary() {
+      var summary = document.getElementById('duration-summary');
+      if (!summary) return;
+      summary.textContent = formatDuration(selectedMinutes);
+    }
+
+    function setDuration(minutes, custom) {
+      if (custom) minutes = Math.max(1, Math.min(120, Math.round(minutes)));
+      else minutes = Math.max(1, Math.min(10080, Math.round(minutes)));
+      selectedMinutes = minutes;
+      isCustom = !!custom;
+      var customWrap = document.getElementById('custom-duration');
+      var customInput = document.getElementById('custom-minutes');
+      if (customWrap) customWrap.classList.toggle('visible', isCustom);
+      if (customInput && isCustom) {
+        customInput.value = Math.min(120, minutes);
+        customInput.focus();
+      }
+      updateSummary();
+    }
+
+    function getSelectedMinutes() {
+      if (isCustom) {
+        var v = parseInt(document.getElementById('custom-minutes').value, 10);
+        return isNaN(v) ? 25 : Math.max(1, Math.min(120, v));
+      }
+      return selectedMinutes;
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(function(el) { el.classList.remove('active'); });
+      var el = document.getElementById(id);
+      if (el) el.classList.add('active');
+    }
+    function formatTimerDisplay(totalSeconds) {
+      if (totalSeconds >= 86400) {
+        var d = Math.floor(totalSeconds / 86400);
+        var h = Math.floor((totalSeconds % 86400) / 3600);
+        return d + 'd ' + h + 'h';
+      }
+      var m = Math.floor(totalSeconds / 60);
+      var s = totalSeconds % 60;
+      return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    function startFakeTimer() {
+      var totalM = getSelectedMinutes();
+      var total = totalM * 60;
+      var left = total;
+      var display = document.getElementById('timer-display');
+      var iv = setInterval(function() {
+        left--;
+        if (left <= 0) { clearInterval(iv); showScreen('screen-focus-home'); return; }
+        display.textContent = formatTimerDisplay(left);
+      }, 1000);
+    }
+
+    function selectChip(chip, minutes, custom) {
+      document.querySelectorAll('#duration-chips .chip, #duration-chips-days .chip').forEach(function(c) { c.classList.remove('selected'); });
+      if (chip) chip.classList.add('selected');
+      setDuration(minutes, custom);
+    }
+
+    document.querySelectorAll('#duration-chips .chip').forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        var min = chip.getAttribute('data-min');
+        if (min === 'custom') {
+          selectChip(chip, parseInt(document.getElementById('custom-minutes').value, 10) || 30, true);
+        } else {
+          selectChip(chip, parseInt(min, 10), false);
+        }
+      });
+    });
+    document.querySelectorAll('#duration-chips-days .chip').forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        var min = chip.getAttribute('data-min');
+        selectChip(chip, parseInt(min, 10), false);
+      });
+    });
+    var customInput = document.getElementById('custom-minutes');
+    if (customInput) {
+      customInput.addEventListener('input', function() {
+        if (!isCustom) return;
+        var v = parseInt(this.value, 10);
+        if (isNaN(v)) return;
+        v = Math.max(1, Math.min(120, v));
+        this.value = v;
+        selectedMinutes = v;
+        updateSummary();
+      });
+      customInput.addEventListener('change', function() {
+        if (!isCustom) return;
+        var v = parseInt(this.value, 10);
+        setDuration(isNaN(v) ? 25 : v, true);
+      });
+    }
+    updateSummary();
+
+    // ----- Scheduled blocking prototype -----
+    var scheduleDurationMin = 25;
+    function getScheduleSummary() {
+      var startD = document.getElementById('schedule-start-date');
+      var startT = document.getElementById('schedule-start-time');
+      if (!startD || !startT) return '';
+      var today = new Date().toISOString().split('T')[0];
+      var label = startD.value === today ? 'Maanta' : startD.value;
+      return label + ' ' + startT.value + ' → ' + formatDuration(scheduleDurationMin) + ' kadib';
+    }
+    function refreshScheduleSummary() {
+      var summary = document.getElementById('schedule-summary');
+      if (summary) summary.textContent = getScheduleSummary();
+    }
+    document.querySelectorAll('#schedule-duration-chips .chip').forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        document.querySelectorAll('#schedule-duration-chips .chip').forEach(function(c) { c.classList.remove('selected'); });
+        chip.classList.add('selected');
+        scheduleDurationMin = parseInt(chip.getAttribute('data-min'), 10);
+        refreshScheduleSummary();
+      });
+    });
+    function addScheduleFromModal() {
+      var list = document.getElementById('schedule-list');
+      if (!list) return;
+      var when = getScheduleSummary();
+      if (!when) when = 'Qorshe cusub';
+      var item = document.createElement('div');
+      item.className = 'schedule-item';
+      item.innerHTML = '<span class="when">' + when + '</span><div class="apps">Instagram, TikTok, YouTube</div><span class="badge-upcoming">Soo socda</span>';
+      list.insertBefore(item, list.firstChild);
+    }
+    ['schedule-start-date', 'schedule-start-time'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('change', refreshScheduleSummary);
+    });
+
+    // ----- Group Focus prototype -----
+    function submitJoinCode() {
+      var input = document.getElementById('join-code-input');
+      var code = (input && input.value) ? input.value.trim().toUpperCase().slice(0, 6) : '';
+      if (!code) {
+        alert('Geli code-ka (e.g. ABC123)');
+        return;
+      }
+      // Prototype: any 6-char code "joins" and shows waiting screen
+      showScreen('screen-group-waiting');
+      if (input) input.value = '';
+    }
+    document.getElementById('join-code-input') && document.getElementById('join-code-input').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') submitJoinCode();
+    });
+    document.querySelectorAll('#group-duration-chips .chip').forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        document.querySelectorAll('#group-duration-chips .chip').forEach(function(c) { c.classList.remove('selected'); });
+        chip.classList.add('selected');
+      });
+    });
+    function startGroupFakeTimer() {
+      var total = 60 * 60; // 1 hour in seconds (prototype: count down from 60 min)
+      var left = Math.min(60 * 5, total); // show 5 min for demo, or use total
+      var display = document.getElementById('group-timer-display');
+      var iv = setInterval(function() {
+        left--;
+        if (left <= 0) { clearInterval(iv); display.textContent = '0:00'; showScreen('screen-focus-home'); return; }
+        display.textContent = formatTimerDisplay(left);
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

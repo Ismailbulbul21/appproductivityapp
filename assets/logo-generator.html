@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qorshaha — Logo</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(160deg, #0f172a 0%, #1e293b 100%);
+      color: #e2e8f0;
+      padding: 2rem;
+    }
+    h1 { font-size: 1.25rem; font-weight: 600; margin: 0; opacity: 0.9; }
+    .logo-wrap {
+      --size: 280px;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06);
+      overflow: hidden;
+      background: #0f172a;
+    }
+    .logo-wrap svg { width: 100%; height: 100%; display: block; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #6366f1;
+      background: rgba(99, 102, 241, 0.15);
+      border: 2px solid rgba(99, 102, 241, 0.4);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.1s;
+    }
+    .btn:hover { background: rgba(99, 102, 241, 0.25); border-color: #6366f1; }
+    .btn:active { transform: scale(0.98); }
+    .btn svg { width: 20px; height: 20px; }
+    .sizes { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: -0.5rem; }
+    .sizes .btn { font-size: 0.875rem; padding: 0.5rem 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Qorshaha — App logo</h1>
+
+  <div class="logo-wrap" id="logoWrap">
+    <svg id="logoSvg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Deep indigo to violet background (no green) -->
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#4338ca"/>
+          <stop offset="40%" stop-color="#5b21b6"/>
+          <stop offset="100%" stop-color="#6d28d9"/>
+        </linearGradient>
+        <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="rgba(255,255,255,0.2)"/>
+          <stop offset="70%" stop-color="rgba(255,255,255,0)"/>
+        </linearGradient>
+        <linearGradient id="iconGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#e0e7ff"/>
+          <stop offset="50%" stop-color="#ffffff"/>
+          <stop offset="100%" stop-color="#c7d2fe"/>
+        </linearGradient>
+        <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="0.6" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <rect width="512" height="512" rx="96" ry="96" fill="url(#bg)"/>
+      <rect width="512" height="512" rx="96" ry="96" fill="url(#shine)"/>
+      <!-- Icon: 6 curved blades radiating — motion, focus, unique & modern -->
+      <g transform="translate(256 256)">
+        <path fill="url(#iconGrad)" opacity="0.9" transform="rotate(0)"
+          d="M 0 -180 C 50 -180 90 -140 90 -90 C 90 -40 50 0 0 0 C -50 0 -90 -40 -90 -90 C -90 -140 -50 -180 0 -180 Z"/>
+        <path fill="url(#iconGrad)" opacity="0.85" transform="rotate(60)"
+          d="M 0 -180 C 50 -180 90 -140 90 -90 C 90 -40 50 0 0 0 C -50 0 -90 -40 -90 -90 C -90 -140 -50 -180 0 -180 Z"/>
+        <path fill="url(#iconGrad)" opacity="0.8" transform="rotate(120)"
+          d="M 0 -180 C 50 -180 90 -140 90 -90 C 90 -40 50 0 0 0 C -50 0 -90 -40 -90 -90 C -90 -140 -50 -180 0 -180 Z"/>
+        <path fill="url(#iconGrad)" opacity="0.75" transform="rotate(180)"
+          d="M 0 -180 C 50 -180 90 -140 90 -90 C 90 -40 50 0 0 0 C -50 0 -90 -40 -90 -90 C -90 -140 -50 -180 0 -180 Z"/>
+        <path fill="url(#iconGrad)" opacity="0.7" transform="rotate(240)"
+          d="M 0 -180 C 50 -180 90 -140 90 -90 C 90 -40 50 0 0 0 C -50 0 -90 -40 -90 -90 C -90 -140 -50 -180 0 -180 Z"/>
+        <path fill="url(#iconGrad)" opacity="0.65" transform="rotate(300)"
+          d="M 0 -180 C 50 -180 90 -140 90 -90 C 90 -40 50 0 0 0 C -50 0 -90 -40 -90 -90 C -90 -140 -50 -180 0 -180 Z"/>
+      </g>
+      <!-- Center: bright focal point -->
+      <circle cx="256" cy="256" r="36" fill="rgba(255,255,255,0.95)" filter="url(#soft)"/>
+      <circle cx="256" cy="256" r="20" fill="url(#bg)"/>
+    </svg>
+  </div>
+
+  <div class="sizes">
+    <button type="button" class="btn" data-size="512">512×512</button>
+    <button type="button" class="btn" data-size="1024">1024×1024</button>
+    <button type="button" class="btn" data-size="1024" data-round="true">1024 (round)</button>
+  </div>
+  <button type="button" class="btn" id="downloadBtn">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+    Download PNG
+  </button>
+
+  <script>
+    (function () {
+      var size = 512;
+      var roundOnly = false;
+
+      function getSvgClone(scale) {
+        var wrap = document.getElementById('logoWrap');
+        var svg = document.getElementById('logoSvg');
+        var clone = svg.cloneNode(true);
+        clone.setAttribute('width', scale);
+        clone.setAttribute('height', scale);
+        clone.setAttribute('viewBox', '0 0 512 512');
+        return clone;
+      }
+
+      function getSvgDataUrl(scale, roundOnly) {
+        var clone = getSvgClone(scale);
+        if (roundOnly) {
+          var rect = clone.querySelector('rect');
+          if (rect) {
+            rect.setAttribute('rx', '256');
+            rect.setAttribute('ry', '256');
+          }
+        }
+        var s = new XMLSerializer().serializeToString(clone);
+        var uri = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(s)));
+        return uri;
+      }
+
+      function downloadPng(pixels, filename, roundOnly) {
+        var canvas = document.createElement('canvas');
+        canvas.width = pixels;
+        canvas.height = pixels;
+        var ctx = canvas.getContext('2d');
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function () {
+          if (roundOnly) {
+            ctx.beginPath();
+            ctx.arc(pixels / 2, pixels / 2, pixels / 2, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.clip();
+          }
+          ctx.drawImage(img, 0, 0, pixels, pixels);
+          var a = document.createElement('a');
+          a.download = filename || 'qorshaha-logo.png';
+          a.href = canvas.toDataURL('image/png');
+          a.click();
+        };
+        img.src = getSvgDataUrl(pixels, roundOnly);
+      }
+
+      document.getElementById('downloadBtn').onclick = function () {
+        downloadPng(size, 'qorshaha-logo-' + size + '.png', roundOnly);
+      };
+
+      document.querySelectorAll('.sizes .btn').forEach(function (btn) {
+        btn.onclick = function () {
+          size = parseInt(btn.getAttribute('data-size'), 10) || 512;
+          roundOnly = btn.getAttribute('data-round') === 'true';
+          downloadPng(size, 'qorshaha-logo-' + size + (roundOnly ? '-round' : '') + '.png', roundOnly);
+        };
+      });
+    })();
+  </script>
+</body>
+</html>
